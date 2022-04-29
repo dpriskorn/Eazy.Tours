@@ -14,9 +14,15 @@
         [EmailAddress]
         public string email { get; set; }
 
+        [Required(ErrorMessage = "Password must be minimum 6 characters long")]
+        [StringLength(maximumLength: 30, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string password { get; set; }
+
         [Required(ErrorMessage = "Phone number field is required")]
         [StringLength(maximumLength: 16, MinimumLength = 9)]
-        public string phoneNumber { get; set; }
+        public int phoneNumber { get; set; }
 
         [Required(ErrorMessage = "Role is required")]
         public string role { get; set; }

@@ -3,13 +3,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var mySecret = builder.Configuration["ConnectionString:Password"];
+var connection = builder.Configuration["ConnectionString:DefaultConnection"];
 
-var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
+//var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    options.UseMySql(connection, ServerVersion.AutoDetect(connection));
 });
+
+builder.Services.AddScoped<IDbRepository, DbRepository>();
 
 var app = builder.Build();
 

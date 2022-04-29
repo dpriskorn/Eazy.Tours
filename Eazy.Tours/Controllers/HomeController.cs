@@ -7,14 +7,18 @@ namespace Eazy.Tours.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IDbRepository _repo;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IDbRepository repo)
         {
             _logger = logger;
+            _repo = repo;
         }
 
         public IActionResult Index()
         {
+            //checking if user is showing - delete later
+            var user = _repo.GetUserById(1);
             return View();
         }
 

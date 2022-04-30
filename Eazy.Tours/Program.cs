@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Eazy.Tours.Areas.Identity.Data;
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("LoginDbContextConnection");;
 
+
+var connectionString = builder.Configuration.GetConnectionString("LoginDbContextConnection");;
 var connection = builder.Configuration["ConnectionString:DefaultConnection"];
+
 builder.Services.AddDbContext<LoginDbContext>(options =>
 {
     options.UseMySql(connection, ServerVersion.AutoDetect(connection));

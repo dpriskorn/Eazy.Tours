@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eazy.Tours.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220423112541_pW")]
-    partial class pW
+    [Migration("20220429225334_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

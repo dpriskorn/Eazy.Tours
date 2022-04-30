@@ -1,9 +1,19 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using Eazy.Tours.Areas.Identity.Data;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 
+//var connectionString = builder.Configuration.GetConnectionString("LoginDbContextConnection");;
 var connection = builder.Configuration["ConnectionString:DefaultConnection"];
+
+builder.Services.AddDbContext<LoginDbContext>(options =>
+{
+    options.UseMySql(connection, ServerVersion.AutoDetect(connection));
+});
 
 //var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -11,7 +21,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connection, ServerVersion.AutoDetect(connection));
 });
 
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<LoginDbContext>();;
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<IDbRepository, DbRepository>();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+
 
 var app = builder.Build();
 
@@ -27,11 +48,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();;
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

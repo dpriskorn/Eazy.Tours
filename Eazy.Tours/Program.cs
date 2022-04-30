@@ -1,15 +1,27 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Eazy.Tours.Areas.Identity.Data;
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("LoginDbContextConnection");;
+
+var connection = builder.Configuration["ConnectionString:DefaultConnection"];
+builder.Services.AddDbContext<LoginDbContext>(options =>
+{
+    options.UseMySql(connection, ServerVersion.AutoDetect(connection));
+});
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<LoginDbContext>();;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-var connection = builder.Configuration["ConnectionString:DefaultConnection"];
 
 //var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseMySql(connection, ServerVersion.AutoDetect(connection));
 });
+
 
 builder.Services.AddScoped<IDbRepository, DbRepository>();
 
@@ -27,11 +39,14 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();;
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

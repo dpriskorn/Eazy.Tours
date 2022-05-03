@@ -23,15 +23,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<LoginDbContext>();;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IDbRepository, DbRepository>();
+AddScoped();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+
+#region Authorization
+AddAuthorizationPolicies();
+#endregion
 
 
 var app = builder.Build();
@@ -59,3 +64,22 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+
+void AddAuthorizationPolicies()
+{
+
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy(Constants.Policies.RequireExcursionOwner, policy => policy.RequireRole(Constants.Roles.ExcursionOwner));
+        options.AddPolicy(Constants.Policies.RequireAdmin, policy => policy.RequireRole(Constants.Roles.Administrator));
+    });
+}
+
+void AddScoped()
+{
+    builder.Services.AddScoped<IDbRepository, DbRepository>();
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+}

@@ -13,4 +13,8 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; }
 
 }
+public class ApplicationRole : IdentityRole
+{
+
+}
 

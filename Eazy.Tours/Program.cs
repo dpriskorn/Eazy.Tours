@@ -29,7 +29,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IDbRepository, DbRepository>();
+AddScoped();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
@@ -68,14 +68,18 @@ app.Run();
 
 void AddAuthorizationPolicies()
 {
-    builder.Services.AddAuthorization(options =>
-    {
-        options.AddPolicy("AdminOnly", policy => policy.RequireClaim("UserNumber"));
-    });
 
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy(Constants.Policies.RequireExcursionOwner, policy => policy.RequireRole(Constants.Roles.ExcursionOwner));
         options.AddPolicy(Constants.Policies.RequireAdmin, policy => policy.RequireRole(Constants.Roles.Administrator));
     });
+}
+
+void AddScoped()
+{
+    builder.Services.AddScoped<IDbRepository, DbRepository>();
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 }

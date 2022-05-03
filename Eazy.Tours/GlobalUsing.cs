@@ -8,3 +8,5 @@ global using Eazy.Tours.Repositories;
 global using Eazy.Tours.Services;
 global using Microsoft.AspNetCore.Authorization;
 global using Eazy.Tours.Core;
+global using Eazy.Tours.Repositories.UnitOfWork;
+global using Eazy.Tours.Areas.Identity.Data;
